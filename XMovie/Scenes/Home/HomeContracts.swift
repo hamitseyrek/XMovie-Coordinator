@@ -13,6 +13,7 @@ protocol HomeViewModelProtocol {
     func moreLoadForCollectionView()
     func moreLoadForTableView()
     func searchMovie(searchText: String)
+    func selectMovie(id: String)
 }
 
 enum HomeViewModelOutput {
@@ -22,6 +23,11 @@ enum HomeViewModelOutput {
     case showMoreLoadTableMovieList([Movie])
 }
 
+enum HomeViewRoute {
+    case movieDetail(id: String)
+}
+
 protocol HomeViewModelDelegate: AnyObject {
     func handleViewModelOutput(_ output: HomeViewModelOutput)
+    func navigate(to route: HomeViewRoute)
 }

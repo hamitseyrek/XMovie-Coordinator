@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 class HomeViewController: UIViewController {
-
+    
     private lazy var searchBar = UISearchBar()
     private lazy var tableView = UITableView()
     
@@ -43,7 +43,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "movieTableViewCell")
         tableView.dataSource = self
         tableView.delegate = self
@@ -55,7 +55,7 @@ class HomeViewController: UIViewController {
         viewModel.load()
         setupUI()
     }
-
+    
     func setupUI() {
         
         view.backgroundColor = .white
@@ -71,7 +71,7 @@ class HomeViewController: UIViewController {
             make.left.equalToSuperview().offset(10)
             make.right.equalToSuperview().offset(-10)
         }
-
+        
         view.addSubview(tableView)
         tableView.layer.borderColor = UIColor.black.cgColor
         tableView.layer.borderWidth = 2
@@ -81,7 +81,7 @@ class HomeViewController: UIViewController {
             make.right.equalToSuperview().offset(-20)
             make.height.equalTo(3 * (view.frame.height / 5))
         }
-
+        
         collectionView.collectionViewLayout = layout
         collectionView.isPagingEnabled = true
         collectionView.layer.borderColor = UIColor.black.cgColor
@@ -126,6 +126,16 @@ extension HomeViewController: HomeViewModelDelegate {
             self.tableView.reloadData()
         }
     }
+    
+    func navigate(to route: HomeViewRoute) {
+        
+        switch route {
+            
+        case .movieDetail(let id):
+            let viewController = AppBuilder.goToMovieDetail(with: id)
+            show(viewController, sender: nil)
+        }
+    }
 }
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
@@ -141,6 +151,14 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         cell.configureCell(item: self.tableMovies[indexPath.row])
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let movie = self.tableMovies[indexPath.row]
+        viewModel.selectMovie(id: movie.id)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -167,8 +185,14 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let movie = self.collectionMovies[indexPath.row]
+        viewModel.selectMovie(id: movie.id)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
+        
         if (!isMoreDataLoadingCV) {
             let scrollViewContentHeight = collectionView.contentSize.width
             let scrollOffsetThreshold = scrollViewContentHeight - collectionView.bounds.size.width

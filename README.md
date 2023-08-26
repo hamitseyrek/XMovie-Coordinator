@@ -25,3 +25,7 @@
 6 - pagination for TableView and CollectionView done
 
 7 - searchBar activated and connected with tableView
+
+8 - movieDetail scene was added and configured
+
+* viewController, viewModel, contracts, services etc..

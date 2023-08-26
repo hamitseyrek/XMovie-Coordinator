@@ -10,6 +10,7 @@ import UIKit
 
 protocol MovieServiceProtocol {
     func getMovies(searchKey: String, page: Int?, completion: @escaping (Result<Movies, NetworkError >) -> Void)
+    func getMovieDetail(id: String, completion: @escaping (Result<Movie, NetworkError>) -> Void)
 }
 
 struct MovieService: MovieServiceProtocol {
@@ -46,6 +47,35 @@ struct MovieService: MovieServiceProtocol {
                 completion(.failure(error))
             }
         }, value: Movies.self)
+    }
+    
+    func getMovieDetail(id: String, completion: @escaping (Result<Movie, NetworkError>) -> Void) {
+        
+        let path = "\(Constants.omdbUrl.rawValue)?apikey=\(Constants.apiKey.rawValue)&i=\(id)"
+        
+            print("333333 3 ", path)
+        NetworkRequest.networkRequest(path: path, completion: { response in
+            
+            switch response {
+            case .success(var movie):
+                let group = DispatchGroup()
+                
+                    group.enter()
+                DispatchQueue.main.async {
+                    self.loadPosters(movie: movie, completion: { image in
+                        movie.posterImage = image
+                        group.leave()
+                    })
+                }
+                
+                group.notify(queue: .main) {
+                    completion(.success(movie))
+                }
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }, value: Movie.self)
     }
     
     private func loadPosters(movie: Movie?, completion: @escaping (UIImage?) -> Void) {

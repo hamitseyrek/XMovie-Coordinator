@@ -16,4 +16,11 @@ final class AppBuilder {
         viewController.viewModel = HomeViewModel(service: app.service)
         return viewController
     }
+    
+    static func goToMovieDetail(with id: String) -> MovieDetailViewController {
+        
+        let viewController = MovieDetailViewController()
+        viewController.viewModel = MovieDetailViewModel(service: app.service, id: id)
+        return viewController
+    }
 }

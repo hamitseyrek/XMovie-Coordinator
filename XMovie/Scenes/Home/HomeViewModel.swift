@@ -149,6 +149,10 @@ final class HomeViewModel: HomeViewModelProtocol {
         } else { self.notify(.setLoading(false))}
     }
     
+    func selectMovie(id: String) {
+        delegate?.navigate(to: .movieDetail(id: id))
+    }
+    
     private func notify(_ output: HomeViewModelOutput) {
         delegate?.handleViewModelOutput(output)
     }
