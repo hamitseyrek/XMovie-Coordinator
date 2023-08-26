@@ -13,6 +13,7 @@ final class AppBuilder {
     static func makeHome() -> HomeViewController {
         
         let viewController = HomeViewController()
+        viewController.viewModel = HomeViewModel(service: app.service)
         return viewController
     }
 }

@@ -13,7 +13,7 @@ class HomeViewController: UIViewController {
     private lazy var searchBar = UISearchBar()
     private lazy var tableView = UITableView()
     
-    let layout: UICollectionViewFlowLayout = {
+    private lazy var layout: UICollectionViewFlowLayout = {
         let l = UICollectionViewFlowLayout()
         l.scrollDirection = .horizontal
         l.minimumLineSpacing = 0
@@ -30,9 +30,27 @@ class HomeViewController: UIViewController {
         return indicator
     }()
     
+    private var tableMovies: [Movie] = []
+    private var collectionMovies: [Movie] = []
+    
+    var viewModel: HomeViewModelProtocol! {
+        didSet {
+            viewModel.delegate = self
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "movieTableViewCell")
+        tableView.dataSource = self
+        tableView.delegate = self
         
+        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "movieCollectionViewCell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        viewModel.load()
         setupUI()
     }
 
@@ -79,6 +97,65 @@ class HomeViewController: UIViewController {
         }
     }
 }
+
+extension HomeViewController: HomeViewModelDelegate {
+    
+    func handleViewModelOutput(_ output: HomeViewModelOutput) {
+        
+        switch output {
+            
+        case .setLoading(let isLoading):
+            self.loadingIndicator.isHidden = !isLoading
+            
+        case .showMovieList(let movieTVList, let movieCVList):
+            self.tableMovies = movieTVList
+            self.collectionMovies = movieCVList
+            self.tableView.reloadData()
+            self.collectionView.reloadData()
+        }
+    }
+}
+
+extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        self.tableMovies.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "movieTableViewCell", for: indexPath) as? MovieTableViewCell else { return UITableViewCell() }
+        
+        cell.configureCell(item: self.tableMovies[indexPath.row])
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        70
+    }
+}
+
+extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.height, height: collectionView.frame.height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        self.collectionMovies.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movieCollectionViewCell", for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
+        
+        cell.configureCell(image: self.collectionMovies[indexPath.row].posterImage)
+        
+        return cell
+    }
+}
+
 
 extension HomeViewController: UISearchBarDelegate {
     

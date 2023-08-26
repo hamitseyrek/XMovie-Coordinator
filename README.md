@@ -15,3 +15,9 @@
 * LaunchScreen was designed
 
 4 - The project was structured. Required files were created.
+
+5 - get movies for first open
+
+* added cells for tableView and collectionView
+
+* wrote getMovies service
