@@ -30,8 +30,10 @@ class HomeViewController: UIViewController {
         return indicator
     }()
     
-    private var tableMovies: [Movie] = []
-    private var collectionMovies: [Movie] = []
+    var tableMovies: [Movie] = []
+    var isMoreDataLoadingTV = false
+    var collectionMovies: [Movie] = []
+    var isMoreDataLoadingCV = false
     
     var viewModel: HomeViewModelProtocol! {
         didSet {
@@ -112,6 +114,16 @@ extension HomeViewController: HomeViewModelDelegate {
             self.collectionMovies = movieCVList
             self.tableView.reloadData()
             self.collectionView.reloadData()
+            
+        case .showMoreLoadCollectionMovieList(let movieList):
+            self.collectionMovies = movieList
+            self.isMoreDataLoadingCV = false
+            self.collectionView.reloadData()
+            
+        case .showMoreLoadTableMovieList(let movieList):
+            self.tableMovies = movieList
+            self.isMoreDataLoadingTV = false
+            self.tableView.reloadData()
         }
     }
 }
@@ -153,6 +165,31 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         cell.configureCell(image: self.collectionMovies[indexPath.row].posterImage)
         
         return cell
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+
+        if (!isMoreDataLoadingCV) {
+            let scrollViewContentHeight = collectionView.contentSize.width
+            let scrollOffsetThreshold = scrollViewContentHeight - collectionView.bounds.size.width
+            
+            if (scrollView.contentOffset.x > scrollOffsetThreshold && collectionView.isDragging) {
+                
+                isMoreDataLoadingCV = true
+                self.viewModel.moreLoadForCollectionView()
+            }
+        }
+        
+        if (!isMoreDataLoadingTV) {
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            if (scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+                
+                isMoreDataLoadingTV = true
+                self.viewModel.moreLoadForTableView()
+            }
+        }
     }
 }
 

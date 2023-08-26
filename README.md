@@ -21,3 +21,5 @@
 * added cells for tableView and collectionView
 
 * wrote getMovies service
+
+6 - pagination for TableView and CollectionView done
