@@ -23,3 +23,5 @@
 * wrote getMovies service
 
 6 - pagination for TableView and CollectionView done
+
+7 - searchBar activated and connected with tableView

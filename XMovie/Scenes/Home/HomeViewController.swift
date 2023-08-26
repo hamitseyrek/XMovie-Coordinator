@@ -196,4 +196,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
 extension HomeViewController: UISearchBarDelegate {
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText.count > 2 {
+            self.viewModel.searchMovie(searchText: searchText)
+        }
+    }
 }

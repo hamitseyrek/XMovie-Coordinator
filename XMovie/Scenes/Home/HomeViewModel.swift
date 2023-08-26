@@ -90,7 +90,7 @@ final class HomeViewModel: HomeViewModelProtocol {
                     self.notify(.showMoreLoadCollectionMovieList(self.moviesCV))
                 case .failure(let error):
 #if DEBUG
-                print(#function,"***** Error2:  ", error.rawValue)
+                print(#function,"***** Error3:  ", error.rawValue)
 #endif
                 }
             }
@@ -115,7 +115,34 @@ final class HomeViewModel: HomeViewModelProtocol {
                     self.notify(.showMoreLoadTableMovieList(self.moviesTV))
                 case .failure(let error):
 #if DEBUG
-                print(#function,"***** Error2:  ", error.rawValue)
+                print(#function,"***** Error4:  ", error.rawValue)
+#endif
+                }
+            }
+        } else { self.notify(.setLoading(false))}
+    }
+    
+    func searchMovie(searchText: String) {
+        
+        pageTV = 1
+        self.moviesTV = []
+        self.searchText = searchText
+
+        notify(.setLoading(true))
+        if totalResultTV > self.moviesTV.count {
+            service.getMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
+                
+                guard let self else { return }
+                self.notify(.setLoading(false))
+                
+                switch result {
+                case .success(let response):
+                    self.moviesTV.append(contentsOf: response.search ?? [])
+                    self.totalResultTV = Int(response.totalResults ?? "10") ?? self.moviesTV.count
+                    self.notify(.showMoreLoadTableMovieList(self.moviesTV))
+                case .failure(let error):
+#if DEBUG
+                print(#function,"***** Error5:  ", error.rawValue)
 #endif
                 }
             }

@@ -12,6 +12,7 @@ protocol HomeViewModelProtocol {
     func load()
     func moreLoadForCollectionView()
     func moreLoadForTableView()
+    func searchMovie(searchText: String)
 }
 
 enum HomeViewModelOutput {
