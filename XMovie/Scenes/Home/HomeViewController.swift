@@ -10,8 +10,8 @@ import SnapKit
 
 class HomeViewController: UIViewController {
 
-    private let searchBar = UISearchBar()
-    private let tableView = UITableView()
+    private lazy var searchBar = UISearchBar()
+    private lazy var tableView = UITableView()
     
     let layout: UICollectionViewFlowLayout = {
         let l = UICollectionViewFlowLayout()
@@ -21,9 +21,9 @@ class HomeViewController: UIViewController {
         return l
     }()
     
-    private var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    let loadingIndicator: UIActivityIndicatorView = {
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
         indicator.color = .gray
         indicator.startAnimating()

@@ -13,3 +13,5 @@
 * HomeViewController was created and designed for XMovie
 
 * LaunchScreen was designed
+
+4 - The project was structured. Required files were created.
