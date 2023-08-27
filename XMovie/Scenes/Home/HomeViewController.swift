@@ -25,9 +25,32 @@ class HomeViewController: UIViewController {
     
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
-        indicator.color = .gray
+        indicator.color = .black
         indicator.startAnimating()
         return indicator
+    }()
+    
+    private lazy var footerLoadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .whiteLarge)
+        indicator.color = .black
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    private lazy var noResultsForTableViewLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No results found."
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
+    }()
+    
+    private lazy var noResultsForCollectionViewLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No results found."
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
     }()
     
     var tableMovies: [Movie] = []
@@ -51,6 +74,8 @@ class HomeViewController: UIViewController {
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "movieCollectionViewCell")
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footerLoading")
         
         viewModel.load()
         setupUI()
@@ -97,6 +122,20 @@ class HomeViewController: UIViewController {
         loadingIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        
+        view.addSubview(noResultsForTableViewLabel)
+        noResultsForTableViewLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+        }
+        
+        view.addSubview(noResultsForCollectionViewLabel)
+        noResultsForCollectionViewLabel.snp.makeConstraints { make in
+            make.center.equalTo(collectionView)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+        }
     }
 }
 
@@ -107,23 +146,30 @@ extension HomeViewController: HomeViewModelDelegate {
         switch output {
             
         case .setLoading(let isLoading):
-            self.loadingIndicator.isHidden = !isLoading
+            DispatchQueue.main.async { [weak self] in
+                self?.loadingIndicator.isHidden = !isLoading
+            }
             
-        case .showMovieList(let movieTVList, let movieCVList):
-            self.tableMovies = movieTVList
-            self.collectionMovies = movieCVList
-            self.tableView.reloadData()
-            self.collectionView.reloadData()
-            
-        case .showMoreLoadCollectionMovieList(let movieList):
-            self.collectionMovies = movieList
-            self.isMoreDataLoadingCV = false
-            self.collectionView.reloadData()
-            
-        case .showMoreLoadTableMovieList(let movieList):
+        case .getDataForTableView(let movieList, let error):
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.tableView.reloadData()
+                self.noResultsForTableViewLabel.text = "Service error: '\(error)'"
+                self.noResultsForTableViewLabel.isHidden = !self.tableMovies.isEmpty
+            }
             self.tableMovies = movieList
             self.isMoreDataLoadingTV = false
-            self.tableView.reloadData()
+            
+        case .getDataForCollectionView(let movieList, let error):
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.footerLoadingIndicator.stopAnimating()
+                self.collectionView.reloadData()
+                self.noResultsForCollectionViewLabel.isHidden = !self.collectionMovies.isEmpty
+                self.noResultsForCollectionViewLabel.text = "Service error: '\(error)'"
+            }
+            self.collectionMovies = movieList
+            self.isMoreDataLoadingCV = false
         }
     }
     
@@ -191,6 +237,20 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         viewModel.selectMovie(id: movie.id)
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: 50, height: 50)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "footerLoading", for: indexPath)
+            footerLoadingIndicator.center = CGPoint(x: footer.bounds.width / 2, y: footer.bounds.height / 2)
+            footer.addSubview(footerLoadingIndicator)
+            return footer
+        }
+        return UICollectionReusableView()
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if (!isMoreDataLoadingCV) {
@@ -200,6 +260,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             if (scrollView.contentOffset.x > scrollOffsetThreshold && collectionView.isDragging) {
                 
                 isMoreDataLoadingCV = true
+                
+                self.footerLoadingIndicator.startAnimating()
                 self.viewModel.moreLoadForCollectionView()
             }
         }
@@ -224,6 +286,10 @@ extension HomeViewController: UISearchBarDelegate {
         
         if searchText.count > 2 {
             self.viewModel.searchMovie(searchText: searchText)
+        } else if searchText.count == 0 {
+            self.viewModel.searchMovie(searchText: "Star")
         }
+        
+        noResultsForTableViewLabel.text = "No results found for '\(searchText)'"
     }
 }

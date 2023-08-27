@@ -21,18 +21,21 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol {
     func load() {
         
         guard let id else { return }
+        
         notify(.setLoading(true))
+        
         app.service.getMovieDetail(id: id) { [weak self] result in
             
-                print("333333 5 ")
             self?.notify(.setLoading(false))
+            
             switch result {
+                
             case .success(let movie):
-                print("333333 1 ", movie)
                 self?.notify(.showDetail(movie))
                 self?.notify(.updateTitle(movie.title ?? "Movie Detail"))
+                
             case .failure(let error):
-                print("333333 2 ", error)
+                self?.notify(.showError(error.rawValue))
             }
         }
     }

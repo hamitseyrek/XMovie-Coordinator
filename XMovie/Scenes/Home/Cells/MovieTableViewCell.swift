@@ -12,7 +12,6 @@ class MovieTableViewCell: UITableViewCell {
     
     private lazy var imageViewIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .gray
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -70,6 +69,6 @@ class MovieTableViewCell: UITableViewCell {
     public func configureCell(item: Movie) {
         self.titleLabel.text = item.title
         self.descriptionLabel.text = item.year
-        self.imageViewIcon.image = item.posterImage
+        self.imageViewIcon.image = item.posterImage ?? UIImage(named: "noImage")
     }
 }

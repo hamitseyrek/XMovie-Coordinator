@@ -17,10 +17,12 @@ final class HomeViewModel: HomeViewModelProtocol {
     private var pageCV = 1
     private var moviesCV: [Movie] = []
     private var totalResultCV = 10
+    private var errorCV = ""
     
     private var pageTV = 1
     private var moviesTV: [Movie] = []
     private var totalResultTV = 10
+    private var errorTV = ""
     
     init(service: MovieServiceProtocol) {
         self.service = service
@@ -36,14 +38,14 @@ final class HomeViewModel: HomeViewModelProtocol {
             guard let self else { return }
             
             switch result {
+                
             case .success(let response):
                 self.totalResultTV = Int(response.totalResults ?? "10") ?? 10
                 self.moviesTV = response.search ?? []
                 group.leave()
+                
             case .failure(let error):
-#if DEBUG
-                print(#function,"***** Error1:  ", error.rawValue)
-#endif
+                self.errorTV = error.rawValue
                 group.leave()
             }
         }
@@ -54,21 +56,22 @@ final class HomeViewModel: HomeViewModelProtocol {
             guard let self else { return }
             
             switch result {
+                
             case .success(let response):
                 self.totalResultCV = Int(response.totalResults ?? "10") ?? 10
                 self.moviesCV = response.search ?? []
                 group.leave()
+                
             case .failure(let error):
-#if DEBUG
-                print(#function,"***** Error2:  ", error.rawValue)
-#endif
+                self.errorCV = error.rawValue
                 group.leave()
             }
         }
         
         group.notify(queue: .main) {
             self.notify(.setLoading(false))
-            self.notify(.showMovieList(self.moviesTV,self.moviesCV))
+            self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
+            self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
         }
     }
     
@@ -76,22 +79,21 @@ final class HomeViewModel: HomeViewModelProtocol {
         
         pageCV += 1
         
-        notify(.setLoading(true))
         if totalResultCV > self.moviesCV.count {
             service.getMovies(searchKey: "Comedy", page: pageCV) { [weak self] result in
                 
                 guard let self else { return }
-                self.notify(.setLoading(false))
                 
                 switch result {
+                    
                 case .success(let response):
                     self.moviesCV.append(contentsOf: response.search ?? [])
                     self.totalResultCV = Int(response.totalResults ?? "10") ?? self.moviesCV.count
-                    self.notify(.showMoreLoadCollectionMovieList(self.moviesCV))
+                    self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
+                    
                 case .failure(let error):
-#if DEBUG
-                print(#function,"***** Error3:  ", error.rawValue)
-#endif
+                    self.errorCV = error.rawValue
+                    self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
                 }
             }
         } else { self.notify(.setLoading(false))}
@@ -101,25 +103,11 @@ final class HomeViewModel: HomeViewModelProtocol {
         
         pageTV += 1
         
-        notify(.setLoading(true))
         if totalResultTV > self.moviesTV.count {
-            service.getMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
-                
-                guard let self else { return }
-                self.notify(.setLoading(false))
-                
-                switch result {
-                case .success(let response):
-                    self.moviesTV.append(contentsOf: response.search ?? [])
-                    self.totalResultTV = Int(response.totalResults ?? "10") ?? self.moviesTV.count
-                    self.notify(.showMoreLoadTableMovieList(self.moviesTV))
-                case .failure(let error):
-#if DEBUG
-                print(#function,"***** Error4:  ", error.rawValue)
-#endif
-                }
-            }
-        } else { self.notify(.setLoading(false))}
+            self.makeRequestForTableView()
+        } else {
+            self.notify(.setLoading(false))
+        }
     }
     
     func searchMovie(searchText: String) {
@@ -127,26 +115,30 @@ final class HomeViewModel: HomeViewModelProtocol {
         pageTV = 1
         self.moviesTV = []
         self.searchText = searchText
-
+        
+        self.makeRequestForTableView()
+    }
+    
+    private func makeRequestForTableView() {
+        
         notify(.setLoading(true))
-        if totalResultTV > self.moviesTV.count {
-            service.getMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
+        service.getMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
+            
+            guard let self else { return }
+            self.notify(.setLoading(false))
+            
+            switch result {
                 
-                guard let self else { return }
-                self.notify(.setLoading(false))
+            case .success(let response):
+                self.moviesTV.append(contentsOf: response.search ?? [])
+                self.totalResultTV = Int(response.totalResults ?? "10") ?? self.moviesTV.count
+                self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
                 
-                switch result {
-                case .success(let response):
-                    self.moviesTV.append(contentsOf: response.search ?? [])
-                    self.totalResultTV = Int(response.totalResults ?? "10") ?? self.moviesTV.count
-                    self.notify(.showMoreLoadTableMovieList(self.moviesTV))
-                case .failure(let error):
-#if DEBUG
-                print(#function,"***** Error5:  ", error.rawValue)
-#endif
-                }
+            case .failure(let error):
+                self.errorTV = error.rawValue
+                self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
             }
-        } else { self.notify(.setLoading(false))}
+        }
     }
     
     func selectMovie(id: String) {

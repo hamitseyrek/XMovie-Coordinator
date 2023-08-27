@@ -18,9 +18,8 @@ protocol HomeViewModelProtocol {
 
 enum HomeViewModelOutput {
     case setLoading(Bool)
-    case showMovieList([Movie],[Movie])
-    case showMoreLoadCollectionMovieList([Movie])
-    case showMoreLoadTableMovieList([Movie])
+    case getDataForTableView([Movie],String)
+    case getDataForCollectionView([Movie],String)
 }
 
 enum HomeViewRoute {

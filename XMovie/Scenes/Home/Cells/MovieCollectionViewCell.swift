@@ -35,6 +35,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
     }
     
     public func configureCell(image: UIImage?) {
-        self.imageView.image = image
+        self.imageView.image = image ?? UIImage(named: "noImage")
     }
 }

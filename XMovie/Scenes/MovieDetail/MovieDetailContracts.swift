@@ -14,6 +14,7 @@ enum MovieDetailViewModelOutput {
     case updateTitle(String)
     case setLoading(Bool)
     case showDetail(Movie)
+    case showError(String)
 }
 
 protocol MovieDetailViewModelDelegate: AnyObject {

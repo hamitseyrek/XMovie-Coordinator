@@ -27,22 +27,26 @@ struct MovieService: MovieServiceProtocol {
             switch response {
             case .success(var movies):
                 
-                let group = DispatchGroup()
-                
-                for i in 0..<(movies.search?.count ?? 0) {
-                    group.enter()
-                    DispatchQueue.main.async {
-                        self.loadPosters(movie: movies.search?[i], completion: { image in
-                            movies.search?[i].posterImage = image
-                            group.leave()
-                        })
+                if movies.search?.count ?? 0 < 1 {
+                    completion(.failure(.notExist))
+                } else {
+                    
+                    let group = DispatchGroup()
+                    
+                    for i in 0..<(movies.search?.count ?? 0) {
+                        group.enter()
+                        DispatchQueue.main.async {
+                            self.loadPosters(movie: movies.search?[i], completion: { image in
+                                movies.search?[i].posterImage = image
+                                group.leave()
+                            })
+                        }
+                    }
+                    
+                    group.notify(queue: .main) {
+                        completion(.success(movies))
                     }
                 }
-
-                group.notify(queue: .main) {
-                    completion(.success(movies))
-                }
-                
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -53,14 +57,13 @@ struct MovieService: MovieServiceProtocol {
         
         let path = "\(Constants.omdbUrl.rawValue)?apikey=\(Constants.apiKey.rawValue)&i=\(id)"
         
-            print("333333 3 ", path)
         NetworkRequest.networkRequest(path: path, completion: { response in
             
             switch response {
             case .success(var movie):
                 let group = DispatchGroup()
                 
-                    group.enter()
+                group.enter()
                 DispatchQueue.main.async {
                     self.loadPosters(movie: movie, completion: { image in
                         movie.posterImage = image
@@ -80,7 +83,7 @@ struct MovieService: MovieServiceProtocol {
     
     private func loadPosters(movie: Movie?, completion: @escaping (UIImage?) -> Void) {
         
-        guard let poster = movie?.posterPath, let url = URL(string: "\(poster)") else { return completion(nil) }
+        guard let poster = movie?.posterPath, let url = URL(string: poster) else { return completion(nil) }
         
         let session = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, _ in
             
