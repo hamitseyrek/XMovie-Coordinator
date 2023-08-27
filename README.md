@@ -29,3 +29,15 @@
 8 - movieDetail scene was added and configured
 
 * viewController, viewModel, contracts, services etc..
+
+9 - some editing for error states done
+
+* services response errors
+
+* noImage errors
+
+* noData errors
+
+* noResults label was added
+
+* footer loading indicator was added for collectionView
