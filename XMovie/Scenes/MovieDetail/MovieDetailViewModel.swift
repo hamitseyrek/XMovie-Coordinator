@@ -24,7 +24,7 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol {
         
         notify(.setLoading(true))
         
-        app.service.getMovieDetail(id: id) { [weak self] result in
+        service?.getMovieDetail(id: id) { [weak self] result in
             
             self?.notify(.setLoading(false))
             

@@ -8,7 +8,15 @@
 import UIKit
 import SnapKit
 
-class HomeViewController: UIViewController {
+//extension HomeViewController {
+//    enum HomeRoutes {
+//        case detail(service: MovieServiceProtocol, id: String)
+//    }
+//}
+
+class HomeViewController: BaseViewController {
+    
+//    var homeRouteClosure: ((HomeViewController.HomeRoutes) -> Void)?
     
     private lazy var searchBar = UISearchBar()
     private lazy var tableView = UITableView()
@@ -64,9 +72,11 @@ class HomeViewController: UIViewController {
         }
     }
     
+    weak var coordinator: HomeCoordinatorProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "movieTableViewCell")
         tableView.dataSource = self
         tableView.delegate = self
@@ -76,9 +86,11 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footerLoading")
-        
+
+//        self.title = "XMovie"
         viewModel.load()
         setupUI()
+        self.showLogo()
     }
     
     func setupUI() {
@@ -93,6 +105,7 @@ class HomeViewController: UIViewController {
         searchBar.layer.cornerRadius = 25
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+//            make.top.equalTo(view).offset(10)
             make.left.equalToSuperview().offset(10)
             make.right.equalToSuperview().offset(-10)
         }
@@ -100,22 +113,25 @@ class HomeViewController: UIViewController {
         view.addSubview(tableView)
         tableView.layer.borderColor = UIColor.black.cgColor
         tableView.layer.borderWidth = 2
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(15)
-            make.left.equalToSuperview().offset(20)
-            make.right.equalToSuperview().offset(-20)
-            make.height.equalTo(3 * (view.frame.height / 5))
-        }
         
         collectionView.collectionViewLayout = layout
         collectionView.isPagingEnabled = true
         collectionView.layer.borderColor = UIColor.black.cgColor
         collectionView.layer.borderWidth = 2
         view.addSubview(collectionView)
+        
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(15)
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview()
+        }
+        
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(15)
-            make.left.right.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.top.equalTo(searchBar.snp.bottom).offset(15)
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(1 * (view.frame.height / 5))
         }
         
         view.addSubview(loadingIndicator)
@@ -173,15 +189,15 @@ extension HomeViewController: HomeViewModelDelegate {
         }
     }
     
-    func navigate(to route: HomeViewRoute) {
-        
-        switch route {
-            
-        case .movieDetail(let id):
-            let viewController = AppBuilder.goToMovieDetail(with: id)
-            show(viewController, sender: nil)
-        }
-    }
+//    func navigate(to route: HomeViewRoute) {
+//
+//        switch route {
+//
+//        case .movieDetail(let id):
+//            let viewController = AppBuilder.goToMovieDetail(with: id)
+//            show(viewController, sender: nil)
+//        }
+//    }
 }
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
@@ -202,7 +218,9 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let movie = self.tableMovies[indexPath.row]
-        viewModel.selectMovie(id: movie.id)
+//        viewModel.selectMovie(id: movie.id)
+        coordinator?.showDetailViewController(service: viewModel.service, id: movie.id)
+//        homeRouteClosure?(.detail(service: viewModel.service, id: movie.id))
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -234,7 +252,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let movie = self.collectionMovies[indexPath.row]
-        viewModel.selectMovie(id: movie.id)
+        coordinator?.showDetailViewController(service: viewModel.service, id: movie.id)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

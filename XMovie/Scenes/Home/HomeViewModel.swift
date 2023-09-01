@@ -7,10 +7,10 @@
 
 import Foundation
 
-final class HomeViewModel: HomeViewModelProtocol {
+final class HomeViewModel: HomeViewModelProtocol {    
     
     weak var delegate: HomeViewModelDelegate?
-    private let service: MovieServiceProtocol
+    var service: MovieServiceProtocol
     
     private var searchText: String = "Star"
     
@@ -141,9 +141,9 @@ final class HomeViewModel: HomeViewModelProtocol {
         }
     }
     
-    func selectMovie(id: String) {
-        delegate?.navigate(to: .movieDetail(id: id))
-    }
+//    func selectMovie(id: String) {
+//        delegate?.navigate(to: .movieDetail(id: id))
+//    }
     
     private func notify(_ output: HomeViewModelOutput) {
         delegate?.handleViewModelOutput(output)

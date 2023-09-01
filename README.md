@@ -41,3 +41,5 @@
 * noResults label was added
 
 * footer loading indicator was added for collectionView
+
+10 - Coordinator pattern implemented
