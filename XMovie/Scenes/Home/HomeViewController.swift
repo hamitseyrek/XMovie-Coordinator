@@ -77,6 +77,19 @@ class HomeViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let networkManager: MoyaNetworkManager = MoyaNetworkManager()
+        
+        
+            networkManager.fetchMovies(searchKey: "selam", page: 1, completion: { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let movies):
+                    print("******** moya  2 1 ", movies.search?.first?.title, movies.search?.first?.posterImage, movies.search?.first?.posterPath)
+                case .failure(let error):
+                    print("******** moya  2 2 ", error.localizedDescription)
+                }
+            })
+        
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "movieTableViewCell")
         tableView.dataSource = self
         tableView.delegate = self
@@ -141,7 +154,7 @@ class HomeViewController: BaseViewController {
         
         view.addSubview(noResultsForTableViewLabel)
         noResultsForTableViewLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.center.equalTo(tableView)
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().offset(-20)
         }
@@ -188,16 +201,6 @@ extension HomeViewController: HomeViewModelDelegate {
             self.isMoreDataLoadingCV = false
         }
     }
-    
-//    func navigate(to route: HomeViewRoute) {
-//
-//        switch route {
-//
-//        case .movieDetail(let id):
-//            let viewController = AppBuilder.goToMovieDetail(with: id)
-//            show(viewController, sender: nil)
-//        }
-//    }
 }
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
@@ -219,7 +222,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         
         let movie = self.tableMovies[indexPath.row]
 //        viewModel.selectMovie(id: movie.id)
-        coordinator?.showDetailViewController(service: viewModel.service, id: movie.id)
+        coordinator?.showDetailViewController(moyaNetworkManager: viewModel.moyaNetworkManager, id: movie.id)
 //        homeRouteClosure?(.detail(service: viewModel.service, id: movie.id))
         
         tableView.deselectRow(at: indexPath, animated: true)
@@ -252,7 +255,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let movie = self.collectionMovies[indexPath.row]
-        coordinator?.showDetailViewController(service: viewModel.service, id: movie.id)
+        coordinator?.showDetailViewController(moyaNetworkManager: viewModel.moyaNetworkManager, id: movie.id)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

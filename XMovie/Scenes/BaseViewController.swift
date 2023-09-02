@@ -42,14 +42,9 @@ class BaseViewController: UIViewController {
     
     func showLogo() {
         
-//        let width = CGFloat(50.0)
-//        let height = CGFloat(38)
-        
         let imageView = UIImageView(image: UIImage(systemName: "xmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .bold, scale: .medium)))
-//        imageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
+
         imageView.contentMode = .scaleAspectFit
-//        imageView.widthAnchor.constraint(equalToConstant: width).isActive = true
-//        imageView.heightAnchor.constraint(equalToConstant: height).isActive = true
         
         let xMovieBarButtonItem = UIBarButtonItem(customView: imageView)
         

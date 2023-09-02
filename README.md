@@ -43,3 +43,5 @@
 * footer loading indicator was added for collectionView
 
 10 - Coordinator pattern implemented
+
+11 - moya(3th) plugin was implemented for network layer

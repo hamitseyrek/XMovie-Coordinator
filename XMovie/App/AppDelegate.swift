@@ -6,7 +6,9 @@
 //
 
 import UIKit
-
+#if DEBUG
+import Bagel
+#endif
 @main
 //class AppDelegate: UIResponder, UIApplicationDelegate {
 //
@@ -24,7 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var appCoordinator: AppCoordinator?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+#if DEBUG
+        Bagel.start()
+#endif
         window = UIWindow.init(frame: UIScreen.main.bounds)
             
             let navigationController: UINavigationController = .init()

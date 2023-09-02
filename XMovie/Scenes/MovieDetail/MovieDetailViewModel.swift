@@ -10,11 +10,11 @@ import Foundation
 final class MovieDetailViewModel: MovieDetailViewModelProtocol {
     
     weak var delegate: MovieDetailViewModelDelegate?
-    private let service: MovieServiceProtocol?
+    private let moyaNetworkManager: MoyaNetworkManager
     private let id: String?
     
-    init(service: MovieServiceProtocol?, id: String) {
-        self.service = service
+    init(id: String, moyaNetworkManager: MoyaNetworkManager) {
+        self.moyaNetworkManager = moyaNetworkManager
         self.id = id
     }
     
@@ -24,7 +24,7 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol {
         
         notify(.setLoading(true))
         
-        service?.getMovieDetail(id: id) { [weak self] result in
+        moyaNetworkManager.fetchMovieDetail(movieId: id) { [weak self] result in
             
             self?.notify(.setLoading(false))
             
@@ -35,7 +35,7 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol {
                 self?.notify(.updateTitle(movie.title ?? "Movie Detail"))
                 
             case .failure(let error):
-                self?.notify(.showError(error.rawValue))
+                self?.notify(.showError(error.localizedDescription))
             }
         }
     }

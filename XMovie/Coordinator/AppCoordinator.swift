@@ -7,28 +7,6 @@
 
 import UIKit
 
-//final class AppCoordinator {
-//
-//    var window: UIWindow?
-//
-//    private lazy var homeCoordinator = HomeCoordinator(navigationController: UINavigationController())
-//
-//    func start(window: UIWindow?) {
-//
-//        let viewController = MainTabBarController()
-////        let navigationController = UINavigationController(rootViewController: viewController) // after added tabbarcontroller removed this
-//        window?.rootViewController = viewController
-//        window?.makeKeyAndVisible()
-//
-////        homeCoordinator.start()
-////
-////        window?.rootViewController = homeCoordinator.navigationController
-////        window?.makeKeyAndVisible()
-//
-//        self.window = window
-//    }
-//}
-
 // Define what type of flows can be started from this Coordinator
 protocol AppCoordinatorProtocol: Coordinator {
     func showLoginFlow()

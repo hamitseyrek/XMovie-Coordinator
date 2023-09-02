@@ -9,12 +9,11 @@ import Foundation
 
 protocol HomeViewModelProtocol {
     var delegate: HomeViewModelDelegate? { get set }
-    var service: MovieServiceProtocol { get set }
+    var moyaNetworkManager: MoyaNetworkManager { get set }
     func load()
     func moreLoadForCollectionView()
     func moreLoadForTableView()
     func searchMovie(searchText: String)
-//    func selectMovie(id: String)
 }
 
 enum HomeViewModelOutput {
@@ -23,11 +22,6 @@ enum HomeViewModelOutput {
     case getDataForCollectionView([Movie],String)
 }
 
-//enum HomeViewRoute {
-//    case movieDetail(id: String)
-//}
-
 protocol HomeViewModelDelegate: AnyObject {
     func handleViewModelOutput(_ output: HomeViewModelOutput)
-//    func navigate(to route: HomeViewRoute)
 }

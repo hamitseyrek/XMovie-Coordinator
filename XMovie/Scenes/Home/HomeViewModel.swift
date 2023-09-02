@@ -10,7 +10,7 @@ import Foundation
 final class HomeViewModel: HomeViewModelProtocol {    
     
     weak var delegate: HomeViewModelDelegate?
-    var service: MovieServiceProtocol
+    var moyaNetworkManager: MoyaNetworkManager
     
     private var searchText: String = "Star"
     
@@ -24,8 +24,8 @@ final class HomeViewModel: HomeViewModelProtocol {
     private var totalResultTV = 10
     private var errorTV = ""
     
-    init(service: MovieServiceProtocol) {
-        self.service = service
+    init(moyaNetworkManager: MoyaNetworkManager) {
+        self.moyaNetworkManager = moyaNetworkManager
     }
     
     func load() {
@@ -33,7 +33,7 @@ final class HomeViewModel: HomeViewModelProtocol {
         notify(.setLoading(true))
         let group = DispatchGroup()
         group.enter()
-        service.getMovies(searchKey: searchText, page: nil) { [weak self] result in
+        moyaNetworkManager.fetchMovies(searchKey: searchText, page: nil) { [weak self] result in
             
             guard let self else { return }
             
@@ -45,25 +45,27 @@ final class HomeViewModel: HomeViewModelProtocol {
                 group.leave()
                 
             case .failure(let error):
-                self.errorTV = error.rawValue
+                self.errorTV = error.localizedDescription
                 group.leave()
             }
         }
         
         group.enter()
-        service.getMovies(searchKey: "Comedy", page: nil) { [weak self] result in
+        
+        moyaNetworkManager.fetchMovies(searchKey: "Comedy", page: nil) { [weak self] response in
             
             guard let self else { return }
             
-            switch result {
+            switch response {
                 
             case .success(let response):
                 self.totalResultCV = Int(response.totalResults ?? "10") ?? 10
                 self.moviesCV = response.search ?? []
+                
                 group.leave()
                 
             case .failure(let error):
-                self.errorCV = error.rawValue
+                self.errorCV = error.localizedDescription
                 group.leave()
             }
         }
@@ -80,7 +82,8 @@ final class HomeViewModel: HomeViewModelProtocol {
         pageCV += 1
         
         if totalResultCV > self.moviesCV.count {
-            service.getMovies(searchKey: "Comedy", page: pageCV) { [weak self] result in
+            
+            moyaNetworkManager.fetchMovies(searchKey: "Comedy", page: pageCV) { [weak self] result in
                 
                 guard let self else { return }
                 
@@ -92,7 +95,7 @@ final class HomeViewModel: HomeViewModelProtocol {
                     self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
                     
                 case .failure(let error):
-                    self.errorCV = error.rawValue
+                    self.errorCV = error.localizedDescription
                     self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
                 }
             }
@@ -122,7 +125,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     private func makeRequestForTableView() {
         
         notify(.setLoading(true))
-        service.getMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
+        moyaNetworkManager.fetchMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
             
             guard let self else { return }
             self.notify(.setLoading(false))
@@ -135,15 +138,11 @@ final class HomeViewModel: HomeViewModelProtocol {
                 self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
                 
             case .failure(let error):
-                self.errorTV = error.rawValue
+                self.errorTV = error.localizedDescription
                 self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
             }
         }
     }
-    
-//    func selectMovie(id: String) {
-//        delegate?.navigate(to: .movieDetail(id: id))
-//    }
     
     private func notify(_ output: HomeViewModelOutput) {
         delegate?.handleViewModelOutput(output)

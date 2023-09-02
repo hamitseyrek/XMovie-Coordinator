@@ -9,7 +9,7 @@ import UIKit
 
 protocol HomeCoordinatorProtocol: Coordinator {
     func showHomeViewController()
-    func showDetailViewController(service: MovieServiceProtocol, id: String)
+    func showDetailViewController(moyaNetworkManager: MoyaNetworkManager, id: String)
 }
 
 final class HomeCoordinator: HomeCoordinatorProtocol {
@@ -32,19 +32,19 @@ final class HomeCoordinator: HomeCoordinatorProtocol {
     
     func showHomeViewController() {
         
-        let service = MovieService()
-        let vm = HomeViewModel(service: service)
+        let moyaNetworkManager = MoyaNetworkManager()
+        let vm = HomeViewModel(moyaNetworkManager: moyaNetworkManager)
         let vc = HomeViewController()
         vc.viewModel = vm
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: false)
     }
     
-    func showDetailViewController(service: MovieServiceProtocol, id: String) {
+    func showDetailViewController(moyaNetworkManager: MoyaNetworkManager, id: String) {
         
         print("***** look at me ")
         let vc = MovieDetailViewController()
-        vc.viewModel = MovieDetailViewModel(service: service, id: id)
+        vc.viewModel = MovieDetailViewModel(id: id, moyaNetworkManager: moyaNetworkManager)
         navigationController.pushViewController(vc, animated: true)
     }
 }
