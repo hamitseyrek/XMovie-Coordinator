@@ -7,5 +7,9 @@ target 'XMovie' do
 
   # Pods for XMovie
   pod 'Bagel'
+  pod 'SVProgressHUD'
+  pod 'Moya'
+  pod 'SnapKit', '~> 5.6.0'
+  pod 'ReachabilitySwift'
 
 end

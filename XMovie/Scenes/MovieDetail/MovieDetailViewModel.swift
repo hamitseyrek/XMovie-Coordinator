@@ -22,25 +22,20 @@ final class MovieDetailViewModel: MovieDetailViewModelProtocol {
         
         guard let id else { return }
         
-        notify(.setLoading(true))
+        self.delegate?.showHUD()
         
         moyaNetworkManager.fetchMovieDetail(movieId: id) { [weak self] result in
             
-            self?.notify(.setLoading(false))
+            self?.delegate?.hideHUD()
             
             switch result {
                 
             case .success(let movie):
-                self?.notify(.showDetail(movie))
-                self?.notify(.updateTitle(movie.title ?? "Movie Detail"))
+                self?.delegate?.showDetail(movie: movie)
                 
             case .failure(let error):
-                self?.notify(.showError(error.localizedDescription))
+                self?.delegate?.showError(errorString: error.localizedDescription)
             }
         }
-    }
-    
-    private func notify(_ output: MovieDetailViewModelOutput) {
-        delegate?.handleViewModelOutput(output)
     }
 }

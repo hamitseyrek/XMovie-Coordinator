@@ -7,8 +7,8 @@
 
 import Foundation
 
-final class HomeViewModel: HomeViewModelProtocol {    
-    
+final class HomeViewModel: HomeViewModelProtocol {
+        
     weak var delegate: HomeViewModelDelegate?
     var moyaNetworkManager: MoyaNetworkManager
     
@@ -30,7 +30,7 @@ final class HomeViewModel: HomeViewModelProtocol {
     
     func load() {
         
-        notify(.setLoading(true))
+        self.delegate?.showHUD()
         let group = DispatchGroup()
         group.enter()
         moyaNetworkManager.fetchMovies(searchKey: searchText, page: nil) { [weak self] result in
@@ -71,9 +71,9 @@ final class HomeViewModel: HomeViewModelProtocol {
         }
         
         group.notify(queue: .main) {
-            self.notify(.setLoading(false))
-            self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
-            self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
+            self.delegate?.hideHUD()
+            self.delegate?.getDataForCollectionView(movies: self.moviesCV)
+            self.delegate?.getDataForTableView(movies: self.moviesTV)
         }
     }
     
@@ -92,24 +92,27 @@ final class HomeViewModel: HomeViewModelProtocol {
                 case .success(let response):
                     self.moviesCV.append(contentsOf: response.search ?? [])
                     self.totalResultCV = Int(response.totalResults ?? "10") ?? self.moviesCV.count
-                    self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
+                    self.delegate?.getDataForCollectionView(movies: self.moviesCV)
                     
                 case .failure(let error):
-                    self.errorCV = error.localizedDescription
-                    self.notify(.getDataForCollectionView(self.moviesCV,self.errorCV))
+                    
+                    self.pageCV -= 1
+                    self.delegate?.showError(error)
+                    self.delegate?.changeHUDForCV()
                 }
             }
-        } else { self.notify(.setLoading(false))}
+        } else {
+            self.delegate?.hideHUD()
+        }
     }
     
     func moreLoadForTableView() {
         
-        pageTV += 1
-        
         if totalResultTV > self.moviesTV.count {
+            pageTV += 1
             self.makeRequestForTableView()
         } else {
-            self.notify(.setLoading(false))
+            self.delegate?.hideHUD()
         }
     }
     
@@ -124,27 +127,24 @@ final class HomeViewModel: HomeViewModelProtocol {
     
     private func makeRequestForTableView() {
         
-        notify(.setLoading(true))
+        self.delegate?.showHUD()
         moyaNetworkManager.fetchMovies(searchKey: self.searchText, page: pageTV) { [weak self] result in
             
             guard let self else { return }
-            self.notify(.setLoading(false))
+            self.delegate?.hideHUD()
             
             switch result {
                 
             case .success(let response):
                 self.moviesTV.append(contentsOf: response.search ?? [])
                 self.totalResultTV = Int(response.totalResults ?? "10") ?? self.moviesTV.count
-                self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
+                self.delegate?.getDataForTableView(movies: self.moviesTV)
                 
             case .failure(let error):
-                self.errorTV = error.localizedDescription
-                self.notify(.getDataForTableView(self.moviesTV,self.errorTV))
+                
+                self.pageCV -= 1
+                self.delegate?.showError(error)
             }
         }
-    }
-    
-    private func notify(_ output: HomeViewModelOutput) {
-        delegate?.handleViewModelOutput(output)
     }
 }

@@ -35,13 +35,6 @@ class MovieDetailViewController: BaseViewController {
         return label
     }()
     
-    let loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .whiteLarge)
-        indicator.color = .black
-        indicator.startAnimating()
-        return indicator
-    }()
-    
     var viewModel: MovieDetailViewModelProtocol! {
         didSet {
             viewModel.delegate = self
@@ -60,7 +53,6 @@ class MovieDetailViewController: BaseViewController {
         view.addSubview(imageView)
         view.addSubview(titleLabel)
         view.addSubview(descriptionLabel)
-        view.addSubview(loadingIndicator)
         
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -81,39 +73,22 @@ class MovieDetailViewController: BaseViewController {
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().offset(-20)
         }
-        
-        loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
     }
 }
 
 extension MovieDetailViewController: MovieDetailViewModelDelegate {
     
-    func handleViewModelOutput(_ output: MovieDetailViewModelOutput) {
+    func showDetail(movie: Movie) {
         
-        switch output {
-            
-        case .updateTitle(let title):
-            self.title = title
-            
-        case .setLoading(let isLoading):
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.loadingIndicator.isHidden = !isLoading
-            }
-            
-        case .showDetail(let movie):
-            self.imageView.image = movie.posterImage ?? UIImage(named: "noImage")
-            self.titleLabel.text = movie.title
-            self.descriptionLabel.text = "\(movie.actors ?? "") \n \(movie.plot ?? "")"
-            
-        case .showError(let error):
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.descriptionLabel.isHidden = true
-                self.titleLabel.text = "Service error: '\(error)'"
-            }
-        }
+        self.title = movie.title
+        self.imageView.image = movie.posterImage ?? UIImage(named: "noImage")
+        self.titleLabel.text = movie.title
+        self.descriptionLabel.text = "\(movie.actors ?? "") \n \(movie.plot ?? "")"
+    }
+    
+    func showError(errorString: String) {
+        
+        self.descriptionLabel.isHidden = true
+        self.titleLabel.text = "Service error: '\(errorString)'"
     }
 }

@@ -31,13 +31,6 @@ class HomeViewController: BaseViewController {
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    private lazy var loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .whiteLarge)
-        indicator.color = .black
-        indicator.startAnimating()
-        return indicator
-    }()
-    
     private lazy var footerLoadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
         indicator.color = .black
@@ -76,19 +69,6 @@ class HomeViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let networkManager: MoyaNetworkManager = MoyaNetworkManager()
-        
-        
-            networkManager.fetchMovies(searchKey: "selam", page: 1, completion: { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let movies):
-                    print("******** moya  2 1 ", movies.search?.first?.title, movies.search?.first?.posterImage, movies.search?.first?.posterPath)
-                case .failure(let error):
-                    print("******** moya  2 2 ", error.localizedDescription)
-                }
-            })
         
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "movieTableViewCell")
         tableView.dataSource = self
@@ -100,10 +80,11 @@ class HomeViewController: BaseViewController {
         
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footerLoading")
 
-//        self.title = "XMovie"
+        self.title = "XMovie"
         viewModel.load()
         setupUI()
         self.showLogo()
+        setupNavigationBar()
     }
     
     func setupUI() {
@@ -118,7 +99,6 @@ class HomeViewController: BaseViewController {
         searchBar.layer.cornerRadius = 25
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-//            make.top.equalTo(view).offset(10)
             make.left.equalToSuperview().offset(10)
             make.right.equalToSuperview().offset(-10)
         }
@@ -147,11 +127,6 @@ class HomeViewController: BaseViewController {
             make.height.equalTo(1 * (view.frame.height / 5))
         }
         
-        view.addSubview(loadingIndicator)
-        loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-        
         view.addSubview(noResultsForTableViewLabel)
         noResultsForTableViewLabel.snp.makeConstraints { make in
             make.center.equalTo(tableView)
@@ -164,41 +139,6 @@ class HomeViewController: BaseViewController {
             make.center.equalTo(collectionView)
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().offset(-20)
-        }
-    }
-}
-
-extension HomeViewController: HomeViewModelDelegate {
-    
-    func handleViewModelOutput(_ output: HomeViewModelOutput) {
-        
-        switch output {
-            
-        case .setLoading(let isLoading):
-            DispatchQueue.main.async { [weak self] in
-                self?.loadingIndicator.isHidden = !isLoading
-            }
-            
-        case .getDataForTableView(let movieList, let error):
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.tableView.reloadData()
-                self.noResultsForTableViewLabel.text = "Service error: '\(error)'"
-                self.noResultsForTableViewLabel.isHidden = !self.tableMovies.isEmpty
-            }
-            self.tableMovies = movieList
-            self.isMoreDataLoadingTV = false
-            
-        case .getDataForCollectionView(let movieList, let error):
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.footerLoadingIndicator.stopAnimating()
-                self.collectionView.reloadData()
-                self.noResultsForCollectionViewLabel.isHidden = !self.collectionMovies.isEmpty
-                self.noResultsForCollectionViewLabel.text = "Service error: '\(error)'"
-            }
-            self.collectionMovies = movieList
-            self.isMoreDataLoadingCV = false
         }
     }
 }
@@ -312,5 +252,29 @@ extension HomeViewController: UISearchBarDelegate {
         }
         
         noResultsForTableViewLabel.text = "No results found for '\(searchText)'"
+    }
+}
+
+extension HomeViewController: HomeViewModelDelegate {
+    
+    func getDataForTableView(movies: [Movie]) {
+        
+        self.tableMovies = movies
+        self.tableView.reloadData()
+        self.isMoreDataLoadingTV = false
+    }
+    
+    func getDataForCollectionView(movies: [Movie]) {
+        
+        self.collectionMovies = movies
+        self.collectionView.reloadData()
+        self.footerLoadingIndicator.stopAnimating()
+        self.isMoreDataLoadingCV = false
+    }
+    
+    func changeHUDForCV() {
+        
+        self.footerLoadingIndicator.stopAnimating()
+        self.isMoreDataLoadingCV = false
     }
 }

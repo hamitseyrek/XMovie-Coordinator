@@ -16,12 +16,8 @@ protocol HomeViewModelProtocol {
     func searchMovie(searchText: String)
 }
 
-enum HomeViewModelOutput {
-    case setLoading(Bool)
-    case getDataForTableView([Movie],String)
-    case getDataForCollectionView([Movie],String)
-}
-
-protocol HomeViewModelDelegate: AnyObject {
-    func handleViewModelOutput(_ output: HomeViewModelOutput)
+protocol HomeViewModelDelegate: BaseViewModelDelegate {
+    func getDataForTableView(movies: [Movie])
+    func getDataForCollectionView(movies: [Movie])
+    func changeHUDForCV()
 }

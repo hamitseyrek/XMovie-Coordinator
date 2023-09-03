@@ -13,6 +13,9 @@
 		5E0D40F12AA20040000A4ADD /* APIErrorMessageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D40F02AA20040000A4ADD /* APIErrorMessageProvider.swift */; };
 		5E0D40F32AA20060000A4ADD /* ConnectivityMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D40F22AA20060000A4ADD /* ConnectivityMiddleware.swift */; };
 		5E0D40F72AA209C6000A4ADD /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D40F62AA209C6000A4ADD /* NetworkManager.swift */; };
+		5E0D40FB2AA3DD15000A4ADD /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D40FA2AA3DD15000A4ADD /* BaseViewModel.swift */; };
+		5E0D41022AA47875000A4ADD /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D41012AA47875000A4ADD /* UIHelper.swift */; };
+		5E0D410C2AA48E8D000A4ADD /* PresentableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0D410B2AA48E8D000A4ADD /* PresentableError.swift */; };
 		5E89D2872A9CDF04003393C3 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D2862A9CDF04003393C3 /* UserViewController.swift */; };
 		5E89D2892A9CDF76003393C3 /* TabBarPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D2882A9CDF76003393C3 /* TabBarPage.swift */; };
 		5E89D28B2A9E25DD003393C3 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D28A2A9E25DD003393C3 /* BaseViewController.swift */; };
@@ -23,12 +26,10 @@
 		5E89D2972AA0B107003393C3 /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D2962AA0B107003393C3 /* LoginCoordinator.swift */; };
 		5E89D2992AA0B168003393C3 /* TabCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D2982AA0B168003393C3 /* TabCoordinator.swift */; };
 		5E89D29C2AA13178003393C3 /* UserCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89D29B2AA13178003393C3 /* UserCoordinator.swift */; };
-		5E89D2A32AA1F769003393C3 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 5E89D2A22AA1F769003393C3 /* Moya */; };
 		5E8E31162A99E07B00A392F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8E31152A99E07B00A392F9 /* AppDelegate.swift */; };
 		5E8E311F2A99E07C00A392F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8E311E2A99E07C00A392F9 /* Assets.xcassets */; };
 		5E8E31222A99E07C00A392F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E8E31202A99E07C00A392F9 /* LaunchScreen.storyboard */; };
 		5E8E312B2A99E61900A392F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8E312A2A99E61900A392F9 /* HomeViewController.swift */; };
-		5E8E312E2A99E6F600A392F9 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8E312D2A99E6F600A392F9 /* SnapKit */; };
 		5E8E313D2A99F0AC00A392F9 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8E313C2A99F0AC00A392F9 /* NetworkError.swift */; };
 		5E8E313F2A99F0C800A392F9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8E313E2A99F0C800A392F9 /* Constants.swift */; };
 		5E8E31452A99F1EB00A392F9 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8E31442A99F1EB00A392F9 /* HomeViewModel.swift */; };
@@ -50,6 +51,9 @@
 		5E0D40F02AA20040000A4ADD /* APIErrorMessageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIErrorMessageProvider.swift; sourceTree = "<group>"; };
 		5E0D40F22AA20060000A4ADD /* ConnectivityMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityMiddleware.swift; sourceTree = "<group>"; };
 		5E0D40F62AA209C6000A4ADD /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		5E0D40FA2AA3DD15000A4ADD /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		5E0D41012AA47875000A4ADD /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
+		5E0D410B2AA48E8D000A4ADD /* PresentableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentableError.swift; sourceTree = "<group>"; };
 		5E89D2862A9CDF04003393C3 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		5E89D2882A9CDF76003393C3 /* TabBarPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarPage.swift; sourceTree = "<group>"; };
 		5E89D28A2A9E25DD003393C3 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -86,9 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E8E312E2A99E6F600A392F9 /* SnapKit in Frameworks */,
 				040A2A597A70F4A20C3323F4 /* Pods_XMovie.framework in Frameworks */,
-				5E89D2A32AA1F769003393C3 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,8 +117,19 @@
 		5E0D40F82AA3C902000A4ADD /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				5E89D28A2A9E25DD003393C3 /* BaseViewController.swift */,
+				5E0D40FA2AA3DD15000A4ADD /* BaseViewModel.swift */,
 			);
 			path = Base;
+			sourceTree = "<group>";
+		};
+		5E0D41002AA47862000A4ADD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				5E0D41012AA47875000A4ADD /* UIHelper.swift */,
+				5E0D410B2AA48E8D000A4ADD /* PresentableError.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		5E89D28C2AA0A750003393C3 /* Coordinator */ = {
@@ -209,6 +222,7 @@
 		5E8E312F2A99EF5900A392F9 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				5E0D41002AA47862000A4ADD /* Utilities */,
 				5E8E31152A99E07B00A392F9 /* AppDelegate.swift */,
 				5E8E311E2A99E07C00A392F9 /* Assets.xcassets */,
 			);
@@ -243,7 +257,6 @@
 				5E8E31432A99F1CC00A392F9 /* Launch */,
 				5E8E31422A99F1B200A392F9 /* MovieDetail */,
 				5E8E31412A99F1A900A392F9 /* Home */,
-				5E89D28A2A9E25DD003393C3 /* BaseViewController.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -332,8 +345,6 @@
 			);
 			name = XMovie;
 			packageProductDependencies = (
-				5E8E312D2A99E6F600A392F9 /* SnapKit */,
-				5E89D2A22AA1F769003393C3 /* Moya */,
 			);
 			productName = XMovie;
 			productReference = 5E8E31122A99E07B00A392F9 /* XMovie.app */;
@@ -364,8 +375,6 @@
 			);
 			mainGroup = 5E8E31092A99E07B00A392F9;
 			packageReferences = (
-				5E8E312C2A99E6F600A392F9 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				5E89D2A12AA1F769003393C3 /* XCRemoteSwiftPackageReference "Moya" */,
 			);
 			productRefGroup = 5E8E31132A99E07B00A392F9 /* Products */;
 			projectDirPath = "";
@@ -441,6 +450,7 @@
 				5E0D40F32AA20060000A4ADD /* ConnectivityMiddleware.swift in Sources */,
 				5E8E314A2A99FB1100A392F9 /* Movies.swift in Sources */,
 				5E89D2972AA0B107003393C3 /* LoginCoordinator.swift in Sources */,
+				5E0D410C2AA48E8D000A4ADD /* PresentableError.swift in Sources */,
 				5E0D40EE2AA1FFEB000A4ADD /* MovieService.swift in Sources */,
 				5E8E31162A99E07B00A392F9 /* AppDelegate.swift in Sources */,
 				5E89D2922AA0A79E003393C3 /* HomeCoordinator.swift in Sources */,
@@ -458,6 +468,8 @@
 				5E8E31552A9A309D00A392F9 /* MovieDetailViewController.swift in Sources */,
 				5E0D40EB2AA1FFB2000A4ADD /* MovieRepository.swift in Sources */,
 				5E0D40F12AA20040000A4ADD /* APIErrorMessageProvider.swift in Sources */,
+				5E0D41022AA47875000A4ADD /* UIHelper.swift in Sources */,
+				5E0D40FB2AA3DD15000A4ADD /* BaseViewModel.swift in Sources */,
 				5E8E31512A99FDC700A392F9 /* MovieCollectionViewCell.swift in Sources */,
 				5E89D29C2AA13178003393C3 /* UserCoordinator.swift in Sources */,
 				5E8E31572A9A30AC00A392F9 /* MovieDetailViewModel.swift in Sources */,
@@ -676,38 +688,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		5E89D2A12AA1F769003393C3 /* XCRemoteSwiftPackageReference "Moya" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Moya/Moya";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 15.0.0;
-			};
-		};
-		5E8E312C2A99E6F600A392F9 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
-			requirement = {
-				branch = develop;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		5E89D2A22AA1F769003393C3 /* Moya */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E89D2A12AA1F769003393C3 /* XCRemoteSwiftPackageReference "Moya" */;
-			productName = Moya;
-		};
-		5E8E312D2A99E6F600A392F9 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8E312C2A99E6F600A392F9 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5E8E310A2A99E07B00A392F9 /* Project object */;
 }

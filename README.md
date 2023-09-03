@@ -44,4 +44,12 @@
 
 10 - Coordinator pattern implemented
 
+* TabBar was added
+
 11 - moya(3th) plugin was implemented for network layer
+
+12 - bases classes redesigned
+
+* contact classes redesigned
+
+* ProgressHUD(3th) and ReachabilitySwift(3th) plugins added and implemented
